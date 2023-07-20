@@ -31,20 +31,20 @@ defmodule InteractiveTest do
   end
 
   test "we can chat with main" do
-    {:ok, pid} = Task.start_link(fn -> MoxDemo.main(["path/to/file"]) end)
+    {:ok, pid} = Task.start_link(fn -> MoxDemo.main(["path/to/other_file"]) end)
 
     assert_receive {:monotonic_time, :microsecond}
-    send(pid, {:monotonic_time, 100})
+    send(pid, {:monotonic_time, 700})
 
-    assert_receive {:read_file!, "path/to/file"}
-    send(pid, {:file_contents, "the file contents"})
+    assert_receive {:read_file!, "path/to/other_file"}
+    send(pid, {:file_contents, "different file contents"})
 
-    assert_receive {:puts, "Hello, the file contents!"}
+    assert_receive {:puts, "Hello, different file contents!"}
 
     assert_receive {:monotonic_time, :microsecond}
-    send(pid, {:monotonic_time, 137})
+    send(pid, {:monotonic_time, 777})
 
-    assert_receive({:puts, "Took 37 microseconds"})
+    assert_receive({:puts, "Took 77 microseconds"})
 
     # and we didn't get anything extra
     refute_receive _
